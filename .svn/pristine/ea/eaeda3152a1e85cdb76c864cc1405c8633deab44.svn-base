@@ -1,0 +1,10 @@
+Ext.define("VATBE.${component}.model.${className}", {
+    extend: "Ext.data.Model",
+    fields: [
+#foreach ($column in $columns)
+    {name: '$column.attrname', type: 'string'}#if($velocityCount != $columns.size()), #end
+
+#end
+
+    ]
+});

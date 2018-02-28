@@ -1,0 +1,19 @@
+Ext.define("VATBE.demo.store.${className}", {
+    extend: "Ext.data.Store",
+    model: "VATBE.demo.model.${className}",
+
+    alias:"store.${classname}",
+    autoLoad: true,
+    pageSize:10,
+    proxy: {
+        type: 'ajax',
+        url: '${pathName}/list',
+        reader: {
+            type: 'json',
+            rootProperty: 'page.records',
+            totalProperty : 'page.total',
+            successProperty: 'code'
+        }
+    }
+
+});

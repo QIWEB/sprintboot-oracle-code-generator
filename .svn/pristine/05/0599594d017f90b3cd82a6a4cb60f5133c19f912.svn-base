@@ -1,0 +1,123 @@
+Ext.define('VATBE.demo.view.${classname}.${className}Controller', {
+    extend: 'Ext.app.ViewController',
+    alias: 'controller.${classname}-controller',
+
+
+    requires :[
+        'Ext.window.Window',
+        'Ext.window.Toast',
+        'VATBE.demo.view.${classname}.${className}Form'
+    ],
+
+    doSearch: function(){
+        //点击搜索按钮将查询条件传递到后台
+        var keyWord=Ext.getCmp('searchName').getValue();
+        this.view.store.load({params:{page:1,start:0,limit:5,name:keyWord}});
+    },
+    onNew : function(){
+        //alert("a");
+        this.displayForm(null);
+    },
+
+    onDel: function () {
+        var id='';
+        var selectionModel = Ext.getCmp('${classname}GridPanel').getSelectionModel();
+        var selection = selectionModel.getSelection();
+        if(selection.length==0){
+            Ext.Msg.alert("提示","请选择要删除的记录!");
+            return ;
+        }else{
+            Ext.Msg.confirm("提示","确定删除?",function(button, text){
+                if(button=="yes"){
+                    var ids = new Array();
+                    for(var i=0;i<selection.length;i++){
+                        ids.push(selection[i].get('id'));
+                    }
+                    Ext.Ajax.request({
+                        url: '${classname}/delete',
+                        type: 'POST',
+                        jsonData:Ext.encode(ids),
+
+                        success: function(response, opts) {
+                            Ext.Msg.alert("信息提示","信息刪除成功!");
+                            Ext.getCmp('${classname}GridPanel').getStore().reload();
+                        },
+                        failure: function(response, opts) {
+                            Ext.Msg.alert("信息提示","刪除失敗!");
+                        }
+                    });
+                }
+            });
+
+        }
+    },
+    onEdit : function(){
+
+        var selectionModel = Ext.getCmp('${classname}GridPanel').getSelectionModel();
+        var selection = selectionModel.getSelection();
+        if(selection.length==0){
+            Ext.Msg.alert("提示","请选择要修改的记录!");
+            return ;
+        }
+
+        if(selection.length>1){
+            Ext.Msg.alert("提示","只能修改一条记录!");
+            return ;
+        }
+        //获取选择的记录
+        var record =selectionModel.getLastSelected();
+        this.displayForm(record);
+        Ext.getCmp('${classname}GridForm').getForm().loadRecord(record);
+
+    },
+
+    displayForm : function(record){
+        var view = this.getView(); //得到列表页
+        this.isEdit = !!record;
+        this.dialog = view.add({
+            xtype : '${classname}-form'
+
+        });
+        this.dialog.show();
+
+    },
+
+    onCancelClick : function(){
+        this.dialog = Ext.destroy(this.dialog);
+    },
+
+    onSaveClick : function() {
+
+        var me = this;
+        var dialog = me.dialog,
+            // form = Ext.getCmp('ttGridForm').getForm(),
+            form = this.lookupReference('form').getForm();
+
+
+        if (form.isValid()) {	  //验证表单是否有效（符合验证规则）
+
+            Ext.Ajax.request({
+                url: '${classname}/save',
+                type: 'POST',
+                jsonData:Ext.encode(form.getValues()),
+
+                success: function(response) {
+                    Ext.Msg.alert("信息提示","信息添加成功!");
+                    Ext.getCmp('ttGridPanel').getStore().reload();
+                },
+                failure: function(response) {
+                    Ext.Msg.alert("信息提示",response.responseText.message);
+                }
+            });
+
+            //销毁对话框
+            me.dialog = Ext.destroy(me.dialog)
+        }
+    },
+
+
+    onCloseForm : function(){
+        this.onCancelClick();
+    }
+
+});

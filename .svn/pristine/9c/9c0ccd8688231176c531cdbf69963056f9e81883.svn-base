@@ -1,0 +1,50 @@
+Ext.define('VATBE.${component}.view.${classname}.${className}Form',{
+    extend : 'Ext.window.Window',
+
+    xtype : '${classname}-form',
+
+    title: '新增',
+    layout : 'fit',
+    modal: true,
+    width: 500,
+    height : 250,
+    closable : true,
+    modelValidation : true,
+
+    items : {
+        id:'${classname}GridForm',
+        xtype:'form',
+        reference: 'form',
+        bodyPadding: 10,
+        border: false,
+        layout:{
+            type:'vbox',
+            align: 'stretch'
+        },
+        items:[
+            #foreach ($column in $columns)
+                {
+                    xtype:'textfield',
+                    fieldLabel: '${column.comments}',
+                    name: '$column.attrname',
+                    #if($column.attrname == 'id') hidden:true, #end
+
+                    msgTarget:'side'
+                } #if($velocityCount != $columns.size()), #end
+            #end
+        ],
+        buttons:[
+            {
+                text:'保存',
+                handler:'onSaveClick'
+            },{
+                text:'取消',
+                handler:'onCancelClick'
+            }
+        ],
+        listeners :{
+            close:'onCloseForm'
+        }
+
+    }
+})

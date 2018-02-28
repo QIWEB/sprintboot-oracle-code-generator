@@ -1,0 +1,14 @@
+package ${package}.domain.common;
+
+/**
+ * Module  ${component}
+ * 错误码
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+public interface ErrorCode {
+
+
+
+}

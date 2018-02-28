@@ -1,0 +1,11 @@
+package ${package}.domain.common;
+
+/**
+ * Module Name ${component}
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+public class Constant {
+    public static String MODULE_NAME = "${component}";
+}

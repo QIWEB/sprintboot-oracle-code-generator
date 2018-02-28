@@ -1,0 +1,71 @@
+Ext.define("VATBE.${component}.view.${classname}.${className}List",{
+    extend: "Ext.grid.Panel",
+
+    id:'${classname}GridPanel',
+    xtype: "${classname}-view",
+
+    selModel: {
+        injectCheckbox: 0,
+        mode: "SIMPLE",     //"SINGLE"/"SIMPLE"/"MULTI"
+        checkOnly: false     //只能通过checkbox选择
+    },
+    selType: "checkboxmodel",
+
+    requires: ['VATBE.${component}.store.${className}',
+        'VATBE.${component}.view.${classname}.${className}Controller',
+        'VATBE.${component}.view.${classname}.${className}Form',
+        'Ext.selection.CheckboxModel',
+        'Ext.toolbar.Paging'],
+
+    controller: '${classname}-controller',
+
+    title: '${className} VIEW',
+    columnLines: true,
+
+    store: '${classname}-store',
+
+    width:800,
+    initComponent:function(){
+        var me = this;
+        var store = Ext.create('VATBE.${component}.store.${className}');//创建store实例
+        this.store = store;
+        me.dockedItems = [{
+            xtype: 'pagingtoolbar',
+            dock: 'bottom',
+            store:store,
+            displayInfo: true
+        }];
+        me.tbar = [{
+            xtype:'label',
+            text:'请输入关键词：'
+        },{
+            xtype:'textfield',
+            id:'searchName'
+        },{
+            text:'搜索',
+            handler:'doSearch'
+        },{
+            text:'新增',
+            tooltip:'新增',
+            handler: 'onNew'
+        },{
+            text:'编辑',
+            tooltip:'编辑',
+            handler: 'onEdit'
+        },
+            {
+                text:'删除',
+                tooltip:'删除',
+                handler: 'onDel'
+            }
+        ];
+        me.columns = [
+            #foreach ($column in $columns)
+                fieldColumn('${column.comments}','$column.attrname')#if($velocityCount != $columns.size()), #end
+
+            #end
+
+        ];
+        me.callParent();
+    }
+});

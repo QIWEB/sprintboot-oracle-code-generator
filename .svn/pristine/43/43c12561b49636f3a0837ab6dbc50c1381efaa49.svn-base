@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dbgo.tools.codegen.dao.GeneratorDao">
+	<select id="queryList" resultType="map">
+
+		select "tableName",  "tableComment"
+		from (select tt.*, rownum as rowno
+		from (
+			select table_name "tableName", comments "tableComment"
+			from user_tab_comments
+			where table_name in (select table_name from user_tables)
+			and table_type = 'TABLE'
+			<if test="tableName != null and tableName.trim() != ''">
+				and table_name like '%'||#{tableName}||'%'
+			</if>
+		) tt
+		<if test="offset != null and limit != null">
+			 where rownum &lt;= ( #{limit} +  #{offset})
+		</if>
+
+		) t
+		<if test="offset != null and limit != null">
+
+			 where t.rowno &gt; #{offset}
+
+		</if>
+
+
+
+	</select>
+	
+	<select id="queryTotal" resultType="int">
+		select count(*)
+		from user_tab_comments
+		where table_name in (select table_name from user_tables)
+		and table_type = 'TABLE'
+		<if test="tableName != null and tableName.trim() != ''">
+			and table_name like '%'||#{tableName}||'%'
+		</if>
+	</select> 
+	
+	<select id="queryTable" resultType="map">
+		select table_name "tableName", comments "tableComment"
+		  from user_tab_comments
+		 where table_name in (select table_name from user_tables)
+		   and table_type = 'TABLE'
+		   and table_name = #{tableName}
+	</select> 
+	
+	<select id="queryColumns" resultType="map">
+select ucc.column_name "columnName",
+       utc.data_type   "dataType",
+       ucc.comments    "columnComment"
+  from user_col_comments ucc, user_tab_columns utc
+ where ucc.TABLE_NAME = utc.TABLE_NAME
+   and ucc.COLUMN_NAME = utc.COLUMN_NAME
+   and ucc.TABLE_NAME in (select table_name from user_tables)
+    and ucc.table_name = #{tableName}
+	</select>
+</mapper>

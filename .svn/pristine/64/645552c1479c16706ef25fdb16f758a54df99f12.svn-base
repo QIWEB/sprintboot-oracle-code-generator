@@ -1,0 +1,36 @@
+Ext.define("VATBE.demo.view.${classname}.${className}List",{
+    extend: "Ext.grid.Panel",
+    xtype: "${classname}-view",
+    requires: ['VATBE.demo.store.${className}',
+        'Ext.toolbar.Paging'],
+
+    title: '${className} VIEW',
+    columnLines: true,
+    store:{
+        type: '${classname}'//通过别名使用store
+    },
+    width:800,
+    initComponent:function(){
+        var me = this;
+        var store = Ext.create('VATBE.demo.store.${className}');//创建store实例
+        this.store = store;
+        me.dockedItems = [{
+            xtype: 'pagingtoolbar',
+            dock: 'bottom',
+            store:store,
+            displayInfo: true
+        }];
+        me.columns = [
+            #foreach ($column in $columns)
+                {
+                    text: '${column.comments}',
+                    flex: 1,
+                    align: 'center',
+                    dataIndex: '$column.attrname'
+                } #if($velocityCount != $columns.size()), #end
+            #end
+
+        ];
+        me.callParent();
+    }
+});

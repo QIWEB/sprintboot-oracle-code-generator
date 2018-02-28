@@ -1,0 +1,18 @@
+package ${package}.domain.api;
+
+import ${package}.domain.model.${className};
+import com.baomidou.mybatisplus.service.IService;
+
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @date ${datetime}
+ */
+public interface ${className}Service extends IService<${className}>{
+
+}
